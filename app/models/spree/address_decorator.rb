@@ -1,5 +1,5 @@
 Spree::Address.class_eval do
-  include SmartyStreetsAddressVerification
+  include SmartyStreetsVerificationAPI
 
   # Indicates if an address is a valid deliverable address. Can only validate
   # addresses in the United States. If the address is outside the United States
