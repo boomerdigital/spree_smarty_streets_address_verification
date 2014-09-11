@@ -23,6 +23,11 @@ Bundle your dependencies:
 bundle
 ```
 
+## SmartyStreets API key
+You'll need a SmartyStreets API token to use the service.  [Dev accounts are free](https://smartystreets.com/account/create).  Once you get your ID and token set them as environment variables for this extension to pick up:
+* `ENV['SMARTY_STREETS_AUTH_ID']`
+* `ENV['SMARTY_STREETS_AUTH_TOKEN']`
+
 Testing
 -------
 
