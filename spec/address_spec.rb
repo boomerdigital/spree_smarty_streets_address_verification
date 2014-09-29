@@ -65,6 +65,19 @@ describe 'Spree::Address extended to validate address' do
     expect( foreign_address.valid? ).to be true
   end
 
+  # There are a few errors that we wnat to bubble up as they are due to
+  # availability or configuration problems. These should generate an error
+  # that the ops team can resolve.
+  it 'will allow smarty street errors to bubble up' do
+    begin
+      WebMock.enable!
+      stub_request(:post, /^https\:\/\/api.smartystreets.com\/street\-address/).to_return status: 500
+      expect{ valid_address.deliverable_address? }.to raise_error
+    ensure
+      WebMock.disable!
+    end
+  end
+
   def fill_in_required_fields address
     address.firstname = 'John'
     address.lastname = 'Doe'

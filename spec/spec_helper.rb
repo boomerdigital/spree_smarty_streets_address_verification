@@ -12,6 +12,9 @@ require File.expand_path('../dummy/config/environment.rb',  __FILE__)
 require 'rspec/rails'
 require 'spree/testing_support/factories'
 
+require 'webmock/rspec'
+WebMock.disable!
+
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
