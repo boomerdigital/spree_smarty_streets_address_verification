@@ -21,15 +21,14 @@ DESCRIPTION
   s.requirements << 'none'
 
   s.add_dependency 'spree_core', '~> 2.3.2'
+  s.add_dependency 'smartystreets'
 
-  s.add_development_dependency 'capybara', '~> 2.1'
   s.add_development_dependency 'coffee-rails'
-  s.add_development_dependency 'database_cleaner'
   s.add_development_dependency 'factory_girl', '~> 4.4'
-  s.add_development_dependency 'ffaker'
   s.add_development_dependency 'rspec-rails', '~> 2.13'
   s.add_development_dependency 'sass-rails', '~> 4.0.2'
-  s.add_development_dependency 'selenium-webdriver'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'sqlite3'
+  s.add_development_dependency 'dotenv'
+  s.add_development_dependency 'webmock'
 end
