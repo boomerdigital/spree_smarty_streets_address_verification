@@ -21,6 +21,7 @@ DESCRIPTION
   s.requirements << 'none'
 
   s.add_dependency 'spree_core', '~> 2.3.2'
+  s.add_dependency 'smartystreets'
 
   s.add_development_dependency 'capybara', '~> 2.1'
   s.add_development_dependency 'coffee-rails'
@@ -32,4 +33,5 @@ DESCRIPTION
   s.add_development_dependency 'selenium-webdriver'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'sqlite3'
+  s.add_development_dependency 'dotenv'
 end

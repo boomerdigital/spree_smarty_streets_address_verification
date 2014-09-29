@@ -1,3 +1,6 @@
+require 'dotenv'
+Dotenv.load
+
 require 'bundler'
 Bundler::GemHelper.install_tasks
 
