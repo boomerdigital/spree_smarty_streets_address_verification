@@ -59,11 +59,16 @@ Spree::Address.class_eval do
 
   private
 
+  def automatically_validate_address?
+    SpreeSmartyStreetsAddressVerification.enabled? &&
+    in_united_states?
+  end
+
   # Adds an error to the address model if the address is not deliverable
   def check_address
     errors[:base] << Spree.t(:invalid_address) unless deliverable_address?
   end
-  validate :check_address, if: :in_united_states?
+  validate :check_address, if: :automatically_validate_address?
 
   def combine components, address, sep=' '
     components.collect do |method|
