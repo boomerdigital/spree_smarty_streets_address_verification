@@ -15,6 +15,10 @@ require 'spree/testing_support/factories'
 require 'webmock/rspec'
 WebMock.disable!
 
+# By default address validation is not enabled in tests to simplify tests
+# and avoid usage limits. But for our own tests we want them enabled.
+SpreeSmartyStreetsAddressVerification.enabled = true
+
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
