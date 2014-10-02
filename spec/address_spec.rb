@@ -6,7 +6,7 @@ describe 'Spree::Address extended to validate address' do
   # Real address in US
   let(:valid_address) do
     Spree::Address.new address1: '45 Main Street', address2: 'Suite 850',
-      city: 'Brooklyn', state: ny, zipcode: '11201', country: ny.country
+      city: 'Brooklyn', state: ny, zipcode: 11201, country: ny.country
   end
 
   # Fake address that looks real

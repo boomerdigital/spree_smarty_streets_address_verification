@@ -9,8 +9,8 @@ Spree::Address.class_eval do
 
     # Grab out the fields we need and wrap up in object
     address = SmartyStreets::StreetAddressRequest.new \
-      street: address1, street2: address2, city: city,
-      state: state_text, zipcode: zipcode, addressee: company
+      street: address1.to_s, street2: address2.to_s, city: city.to_s,
+      state: state_text.to_s, zipcode: zipcode.to_s, addressee: company.to_s
 
     begin
       address = SmartyStreets::StreetAddressApi.call address
