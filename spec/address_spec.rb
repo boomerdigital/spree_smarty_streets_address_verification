@@ -65,6 +65,30 @@ describe 'Spree::Address extended to validate address' do
     expect( foreign_address.valid? ).to be true
   end
 
+  it 'will not automatically validate an address if disabled' do
+    begin
+      SpreeSmartyStreetsAddressVerification.enabled = false
+      fill_in_required_fields invalid_address
+      expect( invalid_address.valid? ).to be true
+    ensure
+      SpreeSmartyStreetsAddressVerification.enabled = true
+    end
+  end
+
+  it 'will allow validation to be conditional' do
+    begin
+      SpreeSmartyStreetsAddressVerification.enabled = lambda do |address|
+        address.address2.blank?
+      end
+      fill_in_required_fields invalid_address
+      expect( invalid_address.valid? ).to be false
+      invalid_address.address2 = 'Suite 100'
+      expect( invalid_address.valid? ).to be true
+    ensure
+      SpreeSmartyStreetsAddressVerification.enabled = true
+    end
+  end
+
   # There are a few errors that we wnat to bubble up as they are due to
   # availability or configuration problems. These should generate an error
   # that the ops team can resolve.

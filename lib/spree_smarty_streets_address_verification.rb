@@ -4,9 +4,15 @@ require 'spree_core'
 module SpreeSmartyStreetsAddressVerification
   mattr_accessor :enabled
   self.enabled = !Rails.env.test?
-  class << self
-    alias_method :enabled?, :enabled
+
+  def self.enabled? address
+    if enabled.respond_to? :call
+      enabled[address]
+    else
+      enabled
+    end
   end
+
 end
 
 require 'spree_smarty_streets_address_verification/engine'

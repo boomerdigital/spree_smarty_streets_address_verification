@@ -52,7 +52,5 @@ following ideas are for the ambitious:
 * Smarty Streets offers various options on how strict to validate.
 * I currently validate and normalize. I could just validate.
 * I could possibly prompt the user to accept the normalization I am making.
-* I could put a hook on the Address object to allow the application (or another
-  extension) to determine when address verification should be used.
 
 Copyright (c) 2014 RailsDog, released under the New BSD License
