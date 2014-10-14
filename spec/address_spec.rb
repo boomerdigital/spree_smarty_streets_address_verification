@@ -89,6 +89,26 @@ describe 'Spree::Address extended to validate address' do
     end
   end
 
+  it 'will not validate if not changed' do
+    fill_in_required_fields valid_address
+    valid_address.save! # This will do an initial validation
+
+    # Normally this would trigger another lookup on validation since it changed.
+    valid_address.city = 'Foofople'
+    valid_address.zipcode = '11111'
+    expect( valid_address.changed? ).to be true
+
+    # We are manually resetting the dirty flags so it looks like nothing
+    # was changed. Confirm it thinks nothing changed and it thinks it is
+    # still valid (i.e. it doesn't do another lookup).
+    valid_address.instance_variable_set("@changed_attributes", nil)
+    expect( valid_address.changed? ).to be false
+
+    # Change some other field not related to lookups
+    valid_address.firstname = 'Joe'
+    expect( valid_address.valid? ).to be true
+  end
+
   # There are a few errors that we wnat to bubble up as they are due to
   # availability or configuration problems. These should generate an error
   # that the ops team can resolve.

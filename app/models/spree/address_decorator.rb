@@ -60,8 +60,12 @@ Spree::Address.class_eval do
   private
 
   def automatically_validate_address?
-    in_united_states? &&
+    address_validation_field_changed? && in_united_states? &&
     SpreeSmartyStreetsAddressVerification.enabled?(self)
+  end
+
+  def address_validation_field_changed?
+    (changed & %w(comapny address1 address2 city state zipcode company)).any?
   end
 
   # Adds an error to the address model if the address is not deliverable
