@@ -65,6 +65,50 @@ describe 'Spree::Address extended to validate address' do
     expect( foreign_address.valid? ).to be true
   end
 
+  it 'will not automatically validate an address if disabled' do
+    begin
+      SpreeSmartyStreetsAddressVerification.enabled = false
+      fill_in_required_fields invalid_address
+      expect( invalid_address.valid? ).to be true
+    ensure
+      SpreeSmartyStreetsAddressVerification.enabled = true
+    end
+  end
+
+  it 'will allow validation to be conditional' do
+    begin
+      SpreeSmartyStreetsAddressVerification.enabled = lambda do |address|
+        address.address2.blank?
+      end
+      fill_in_required_fields invalid_address
+      expect( invalid_address.valid? ).to be false
+      invalid_address.address2 = 'Suite 100'
+      expect( invalid_address.valid? ).to be true
+    ensure
+      SpreeSmartyStreetsAddressVerification.enabled = true
+    end
+  end
+
+  it 'will not validate if not changed' do
+    fill_in_required_fields valid_address
+    valid_address.save! # This will do an initial validation
+
+    # Normally this would trigger another lookup on validation since it changed.
+    valid_address.city = 'Foofople'
+    valid_address.zipcode = '11111'
+    expect( valid_address.changed? ).to be true
+
+    # We are manually resetting the dirty flags so it looks like nothing
+    # was changed. Confirm it thinks nothing changed and it thinks it is
+    # still valid (i.e. it doesn't do another lookup).
+    valid_address.instance_variable_set("@changed_attributes", nil)
+    expect( valid_address.changed? ).to be false
+
+    # Change some other field not related to lookups
+    valid_address.firstname = 'Joe'
+    expect( valid_address.valid? ).to be true
+  end
+
   # There are a few errors that we wnat to bubble up as they are due to
   # availability or configuration problems. These should generate an error
   # that the ops team can resolve.
