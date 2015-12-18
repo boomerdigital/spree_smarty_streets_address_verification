@@ -60,17 +60,23 @@ Spree::Address.class_eval do
   private
 
   def automatically_validate_address?
-    address_validation_field_changed? && in_united_states? &&
-    SpreeSmartyStreetsAddressVerification.enabled?(self)
+    return false unless in_united_states?
+    return false unless SpreeSmartyStreetsAddressVerification.enabled? self
+    return true if address_validation_field_changed?
+    not validated?
   end
 
   def address_validation_field_changed?
-    (changed & %w(comapny address1 address2 city state zipcode company)).any?
+    return false if new_record? && validated?
+    return true if new_record?
+    (changed & %w(address1 address2 city zipcode company state_name)).any? ||
+    (state.id != state_id_was) || (country.id != country_id_was)
   end
 
   # Adds an error to the address model if the address is not deliverable
   def check_address
-    errors[:base] << Spree.t(:invalid_address) unless deliverable_address?
+    self.validated = deliverable_address?
+    errors[:base] << Spree.t(:invalid_address) unless validated?
   end
   validate :check_address, if: :automatically_validate_address?
 

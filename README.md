@@ -53,4 +53,4 @@ following ideas are for the ambitious:
 * I currently validate and normalize. I could just validate.
 * I could possibly prompt the user to accept the normalization I am making.
 
-Copyright (c) 2014 RailsDog, released under the New BSD License
+Copyright (c) 2014 RailsDog, 2015 Boomer Digital, released under the New BSD License
