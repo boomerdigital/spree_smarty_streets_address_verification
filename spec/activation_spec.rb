@@ -18,8 +18,10 @@ describe 'library activation' do
       SpreeSmartyStreetsAddressVerification.enabled = lambda do |address|
         address.address2.blank?
       end
-      fill_in_required_fields invalid_address
-      expect( invalid_address.valid? ).to be false
+      VCR.use_cassette "invalid address" do
+        fill_in_required_fields invalid_address
+        expect( invalid_address.valid? ).to be false
+      end
       invalid_address.address2 = 'Suite 100'
       expect( invalid_address.valid? ).to be true
     ensure
@@ -28,13 +30,17 @@ describe 'library activation' do
   end
 
   it 'will automatically disable validation if not authenticated' do
-    expect( SpreeSmartyStreetsAddressVerification.enabled? ).to eq true
+    begin
+      expect( SpreeSmartyStreetsAddressVerification.enabled? ).to eq true
 
-    # Re-define method to pertend we never authenticated
-    def SmartyStreets.set_auth(*args); end
+      # Re-define method to pertend we never authenticated
+      def SmartyStreets.set_auth(*args); end
 
-    # Now disabled since we think we are not authenticated
-    expect( SpreeSmartyStreetsAddressVerification.enabled? ).to eq false
+      fill_in_required_fields invalid_address
+      expect( invalid_address.valid? ).to be true
+    ensure
+      SmartyStreets.singleton_class.send :remove_method, :set_auth
+    end
   end
 
 end

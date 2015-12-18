@@ -13,9 +13,14 @@ require 'rspec/rails'
 require 'spree/testing_support/factories'
 require 'spree_smarty_streets_address_verification/factories'
 require 'support/test_helpers'
-
 require 'webmock/rspec'
-WebMock.disable!
+require 'vcr'
+require 'byebug'
+
+VCR.configure do |config|
+  config.cassette_library_dir = "fixtures/vcr_cassettes"
+  config.hook_into :webmock
+end
 
 # By default address validation is not enabled in tests to simplify tests
 # and avoid usage limits. But for our own tests we want them enabled.

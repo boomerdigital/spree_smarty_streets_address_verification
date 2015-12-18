@@ -14,3 +14,5 @@ pkg
 spec/dummy
 .zedstate
 .env
+.byebug_history
+todo.txt

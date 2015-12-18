@@ -31,4 +31,6 @@ DESCRIPTION
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'dotenv'
   s.add_development_dependency 'webmock'
+  s.add_development_dependency 'vcr'
+  s.add_development_dependency 'byebug'
 end

@@ -12,10 +12,12 @@ describe 'Spree::Address extended to validate address' do
   end
 
   it 'can validate and normalize an valid address' do
-    expect( valid_address.deliverable_address? ).to be true
-    expect( valid_address.address1 ).to eq '45 Main St'
-    expect( valid_address.address2 ).to eq 'Ste 850'
-    expect( valid_address.zipcode ).to eq '11201-8200'
+    VCR.use_cassette "valid address" do
+      expect( valid_address.deliverable_address? ).to be true
+      expect( valid_address.address1 ).to eq '45 Main St'
+      expect( valid_address.address2 ).to eq 'Ste 850'
+      expect( valid_address.zipcode ).to eq '11201-8200'
+    end
   end
 
   it 'will throw an error if validating a foreign address' do
@@ -24,19 +26,25 @@ describe 'Spree::Address extended to validate address' do
   end
 
   it 'will indicate an invalid address is invalid' do
-    expect( invalid_address.deliverable_address? ).to be false
+    VCR.use_cassette "invalid address" do
+      expect( invalid_address.deliverable_address? ).to be false
+    end
   end
 
   it 'will indicate an incomplete address is invalid' do
-    expect( blank_address.deliverable_address? ).to be false
+    VCR.use_cassette "blank address" do
+      expect( blank_address.deliverable_address? ).to be false
+    end
   end
 
   it 'will automatically validate an us address' do
-    fill_in_required_fields valid_address
-    expect( valid_address.valid? ).to be true
-    expect( valid_address.address1 ).to eq '45 Main St'
-    expect( valid_address.address2 ).to eq 'Ste 850'
-    expect( valid_address.zipcode ).to eq '11201-8200'
+    VCR.use_cassette "valid address" do
+      fill_in_required_fields valid_address
+      expect( valid_address.valid? ).to be true
+      expect( valid_address.address1 ).to eq '45 Main St'
+      expect( valid_address.address2 ).to eq 'Ste 850'
+      expect( valid_address.zipcode ).to eq '11201-8200'
+    end
   end
 
   it 'will not automatically validate a foreign address' do
@@ -45,8 +53,10 @@ describe 'Spree::Address extended to validate address' do
   end
 
   it 'will not validate if not changed' do
-    fill_in_required_fields valid_address
-    valid_address.save! # This will do an initial validation
+    VCR.use_cassette "valid address" do
+      fill_in_required_fields valid_address
+      valid_address.save! # This will do an initial validation
+    end
 
     # Normally this would trigger another lookup on validation since it changed.
     valid_address.city = 'Foofople'
@@ -68,13 +78,8 @@ describe 'Spree::Address extended to validate address' do
   # availability or configuration problems. These should generate an error
   # that the ops team can resolve.
   it 'will allow smarty street errors to bubble up' do
-    begin
-      WebMock.enable!
-      stub_request(:post, /^https\:\/\/api.smartystreets.com\/street\-address/).to_return status: 500
-      expect{ valid_address.deliverable_address? }.to raise_error SmartyStreets::ApiError
-    ensure
-      WebMock.disable!
-    end
+    stub_request(:post, /^https\:\/\/api.smartystreets.com\/street\-address/).to_return status: 500
+    expect{ valid_address.deliverable_address? }.to raise_error SmartyStreets::ApiError
   end
 
 end

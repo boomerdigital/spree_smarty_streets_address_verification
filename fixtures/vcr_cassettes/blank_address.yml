@@ -1,0 +1,39 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.smartystreets.com/street-address?auth-id=e4fa0172-5e02-4167-acf0-281cf60bba37&auth-token=mB6m83BkyI2I7LlACDUd
+    body:
+      encoding: UTF-8
+      string: '[{"street":" ","street2":"","city":" ","state":"NY","zipcode":" ","addressee":""}]'
+    headers:
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      X-Standardize-Only:
+      - 'true'
+      X-Accept-Keypair:
+      - 'false'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      X-Account-Header:
+      - 1f4ecdde-0000-0000-0000-000000000000
+      Date:
+      - Fri, 18 Dec 2015 16:37:59 GMT
+      Content-Length:
+      - '3'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: UTF-8
+      string: |
+        []
+    http_version: 
+  recorded_at: Fri, 18 Dec 2015 16:37:59 GMT
+recorded_with: VCR 3.0.0

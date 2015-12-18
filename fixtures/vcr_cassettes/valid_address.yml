@@ -1,0 +1,35 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.smartystreets.com/street-address?auth-id=e4fa0172-5e02-4167-acf0-281cf60bba37&auth-token=mB6m83BkyI2I7LlACDUd
+    body:
+      encoding: UTF-8
+      string: '[{"street":"45 Main Street","street2":"Suite 850","city":"Brooklyn","state":"NY","zipcode":"11201","addressee":""}]'
+    headers:
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      X-Standardize-Only:
+      - 'true'
+      X-Accept-Keypair:
+      - 'false'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 18 Dec 2015 16:37:59 GMT
+      Content-Length:
+      - '868'
+    body:
+      encoding: UTF-8
+      string: |
+        [{"input_index":0,"candidate_index":0,"delivery_line_1":"45 Main St Ste 850","last_line":"Brooklyn NY 11201-8200","delivery_point_barcode":"112018200005","components":{"primary_number":"45","street_name":"Main","street_suffix":"St","secondary_number":"850","secondary_designator":"Ste","city_name":"Brooklyn","state_abbreviation":"NY","zipcode":"11201","plus4_code":"8200","delivery_point":"00","delivery_point_check_digit":"5"},"metadata":{"record_type":"H","zip_type":"Standard","county_fips":"36047","county_name":"Kings","carrier_route":"C053","congressional_district":"07","rdi":"Commercial","elot_sequence":"0190","elot_sort":"A","latitude":40.70282,"longitude":-73.99059,"precision":"Zip9","time_zone":"Eastern","utc_offset":-5,"dst":true},"analysis":{"dpv_match_code":"Y","dpv_footnotes":"AABB","dpv_cmra":"N","dpv_vacant":"N","active":"Y","footnotes":"N#"}}]
+    http_version: 
+  recorded_at: Fri, 18 Dec 2015 16:37:59 GMT
+recorded_with: VCR 3.0.0
