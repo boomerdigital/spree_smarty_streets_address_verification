@@ -1,32 +1,10 @@
 require 'spec_helper'
 
 describe 'Spree::Address extended to validate address' do
-  let(:ny) { create :state, name: 'New York', abbr: 'NY' }
-
-  # Real address in US
-  let(:valid_address) do
-    Spree::Address.new address1: '45 Main Street', address2: 'Suite 850',
-      city: 'Brooklyn', state: ny, zipcode: 11201, country: ny.country
-  end
-
-  # Fake address that looks real
-  let(:invalid_address) do
-    Spree::Address.new address1: '123 Foo Street', city: 'Albany',
-      state: ny, zipcode: '11243', country: ny.country
-  end
-
-  let(:blank_address) do
-    Spree::Address.new address1: ' ', city: ' ',
-      state_name: ' ', zipcode: ' ', country: ny.country
-  end
-
-  # Real address in foreign country
-  let(:foreign_address) do
-    country = create :country, name: 'Germany',
-      iso3: 'DEU', iso: 'DE', iso_name: 'GERMANY', numcode: '276'
-    Spree::Address.new address1: 'Prinzessinnenstr. 20', city: 'Berlin',
-      zipcode: '10969', country: country
-  end
+  let(:valid_address) { build :valid_address }
+  let(:foreign_address) { build :foreign_address }
+  let(:invalid_address) { build :invalid_address }
+  let(:blank_address) { build :blank_address }
 
   it 'can determine if a US address' do
     expect( valid_address.in_united_states? ).to be true
@@ -41,7 +19,8 @@ describe 'Spree::Address extended to validate address' do
   end
 
   it 'will throw an error if validating a foreign address' do
-    expect { foreign_address.deliverable_address? }.to raise_error
+    expect { foreign_address.deliverable_address? }.to \
+      raise_error SpreeSmartyStreetsAddressVerification::UnsupportedAddress
   end
 
   it 'will indicate an invalid address is invalid' do
@@ -63,30 +42,6 @@ describe 'Spree::Address extended to validate address' do
   it 'will not automatically validate a foreign address' do
     fill_in_required_fields foreign_address
     expect( foreign_address.valid? ).to be true
-  end
-
-  it 'will not automatically validate an address if disabled' do
-    begin
-      SpreeSmartyStreetsAddressVerification.enabled = false
-      fill_in_required_fields invalid_address
-      expect( invalid_address.valid? ).to be true
-    ensure
-      SpreeSmartyStreetsAddressVerification.enabled = true
-    end
-  end
-
-  it 'will allow validation to be conditional' do
-    begin
-      SpreeSmartyStreetsAddressVerification.enabled = lambda do |address|
-        address.address2.blank?
-      end
-      fill_in_required_fields invalid_address
-      expect( invalid_address.valid? ).to be false
-      invalid_address.address2 = 'Suite 100'
-      expect( invalid_address.valid? ).to be true
-    ensure
-      SpreeSmartyStreetsAddressVerification.enabled = true
-    end
   end
 
   it 'will not validate if not changed' do
@@ -116,16 +71,10 @@ describe 'Spree::Address extended to validate address' do
     begin
       WebMock.enable!
       stub_request(:post, /^https\:\/\/api.smartystreets.com\/street\-address/).to_return status: 500
-      expect{ valid_address.deliverable_address? }.to raise_error
+      expect{ valid_address.deliverable_address? }.to raise_error SmartyStreets::ApiError
     ensure
       WebMock.disable!
     end
-  end
-
-  def fill_in_required_fields address
-    address.firstname = 'John'
-    address.lastname = 'Doe'
-    address.phone = '555-123-4567'
   end
 
 end

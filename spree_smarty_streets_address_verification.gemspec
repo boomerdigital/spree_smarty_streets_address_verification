@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.name = 'spree_smarty_streets_address_verification'
-  s.version = '2.3.2'
+  s.version = '3.0.0'
   s.summary = 'Address verification via smarty streets for Spree'
   s.description=<<DESCRIPTION
     Decorates the Address object so the address is verified and normalized
@@ -20,13 +20,13 @@ DESCRIPTION
   s.require_path = 'lib'
   s.requirements << 'none'
 
-  s.add_dependency 'spree_core', '>= 2.3.2'
+  s.add_dependency 'spree_core', '>= 3.0.0'
   s.add_dependency 'smartystreets'
 
   s.add_development_dependency 'coffee-rails'
-  s.add_development_dependency 'factory_girl', '~> 4.4'
-  s.add_development_dependency 'rspec-rails', '~> 2.13'
-  s.add_development_dependency 'sass-rails', '~> 4.0.2'
+  s.add_development_dependency 'factory_girl'
+  s.add_development_dependency 'rspec-rails'
+  s.add_development_dependency 'sass-rails'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'dotenv'

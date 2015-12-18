@@ -4,7 +4,7 @@ Spree::Address.class_eval do
   # addresses in the United States. If the address is outside the United States
   # then an error is thrown.
   def deliverable_address?
-    raise ActiveRecord::ActiveRecordError,
+    raise SpreeSmartyStreetsAddressVerification::UnsupportedAddress,
       'Cannot validate internationally' unless in_united_states?
 
     # Grab out the fields we need and wrap up in object
