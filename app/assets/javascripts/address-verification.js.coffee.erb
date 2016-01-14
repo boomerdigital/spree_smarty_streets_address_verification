@@ -1,0 +1,59 @@
+$ = jQuery
+
+smarty_key = '<%= ENV['SMARTY_STREETS_WEBSITE_KEY'] %>'
+return if smarty_key == ''
+
+# In theory everything below *should* be replaceable with just:
+#
+#   jQuery.LiveAddress key: smarty_key, enforceVerification: true
+#
+# But because of a bug in the SmartyStreets plugin we have a lot more code.
+# The country field can be a drop-down but the plugin looks at the "id" not
+# the visual label (the state dropdown is better as it looks at the label).
+# This means when the US is selected the plugin thinks the country selected
+# is "232". Since it doesn't know "232" is the United States it thinks it is
+# a foreign country and therefore doesn't do auto-complete or address
+# validation.
+#
+# To work around this we have removed the country from the list of fields that
+# the plugin will scan for when mapping a form for address fields. Since there
+# is no country (from the plugin's perspective) it *assumes* the US (since
+# that is really the only thing it can auto-complete and validate anyway).
+# This works around the problem.
+#
+# But now we have an additional problem. If the user wants to select a
+# different it will still assume we are in the US and will tell the user that
+# the address is invalid even though it may be a perfectly valid foreign
+# address. To deal with this we enable/disable the address validation
+# depending on if the US is selected.
+#
+# This bug will be fixed when you can go to http://jsfiddle.net/69jv2/629/ and
+# the auto-complete and verification works.
+
+service = null
+country_selector = 'select[name*="country_id"]'
+$(document).on 'change', country_selector, ->
+  # Find the validator object related to this country field
+  related_street_field = $('#' + @id.replace(/country_id/, 'address1'))[0]
+  return unless related_street_field
+  address_validator = null;
+  for validator in service.getMappedAddresses()
+    address_validator = validator if validator.getDomFields()['street'] == related_street_field
+  return unless address_validator
+  validator_id = address_validator.id()
+  active = address_validator.active
+
+  # If a US address then activate the validation, otherwise de-activate
+  us_address = $(@).find('option:selected').text().match /united states/i
+  if us_address
+    service.activate validator_id unless active
+  else
+    service.deactivate validator_id if active
+
+$ ->
+  sreturn unless $.LiveAddress
+  service = $.LiveAddress
+    key: smarty_key, debug: false, enforceVerification: true
+    fieldSelector: 'input[type=text], input:not([type]), textarea, select:not([name*="country_id"])'
+
+  $(country_selector).trigger 'change'

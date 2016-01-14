@@ -6,7 +6,8 @@ is deliverable and normalize the address. Automatically decorates the Address
 model so that all address are automatically updated.
 
 Since Smarty Streets only supports US addresses the validation only happens
-if the country is the United States.
+if the country is the United States (I hear international is in beta so this
+may change at some point).
 
 Installation
 ------------
@@ -24,9 +25,24 @@ bundle
 ```
 
 ## SmartyStreets API key
+
 You'll need a SmartyStreets API token to use the service.  [Dev accounts are free](https://smartystreets.com/account/create).  Once you get your ID and token set them as environment variables for this extension to pick up:
+
 * SMARTY_STREETS_AUTH_ID
 * SMARTY_STREETS_AUTH_TOKEN
+
+In addition, if you want to do client-side validation and autocomplete you will
+need to populate the `SMARTY_STREETS_WEBSITE_KEY` field.
+
+Client-Side Validation
+----------------------
+
+To enable client-side validation set the KEY as describe above. Then include
+the files 'address-verification` in both your CSS and JS pipeline. Finally
+add the following to your HTML head AFTER your general site JS has loaded
+(which is assumed to have jQuery).
+
+    <%= javascript_include_tag '//d79i1fxsrar4t.cloudfront.net/jquery.liveaddress/2.8/jquery.liveaddress.min.js' %>
 
 Testing
 -------
@@ -51,6 +67,5 @@ following ideas are for the ambitious:
 
 * Smarty Streets offers various options on how strict to validate.
 * I currently validate and normalize. I could just validate.
-* I could possibly prompt the user to accept the normalization I am making.
 
 Copyright (c) 2014 RailsDog, 2015 Boomer Digital, released under the New BSD License
