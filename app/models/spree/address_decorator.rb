@@ -33,6 +33,11 @@ Spree::Address.class_eval do
         self.city = address.components.city_name
         self.state = Spree::State.find_by abbr: address.components.state_abbreviation
         self.zipcode = combine %i(zipcode plus4_code), address, '-'
+
+        # Also store the long/lat. It's useful and SmartyStreets provides it
+        self.latitude = address.metadata.latitude
+        self.longitude = address.metadata.longitude
+
         return true
       end
     rescue SmartyStreets::ApiError

@@ -18,6 +18,9 @@ describe 'Spree::Address extended to validate address' do
         expect( valid_address.address1 ).to eq '45 Main St'
         expect( valid_address.address2 ).to eq 'Ste 850'
         expect( valid_address.zipcode ).to eq '11201-8200'
+
+        expect( valid_address.latitude ).to eq 40.70282
+        expect( valid_address.longitude ).to eq -73.99059
       end
     end
 
