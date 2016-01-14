@@ -14,5 +14,12 @@ class SpreeSmartyStreetsAddressVerification::Engine < Rails::Engine
     end
   end
 
+  initializer 'authenticate smarty streets' do
+    # Only authenticate if credentials are provided
+    SmartyStreets.set_auth \
+      ENV['SMARTY_STREETS_AUTH_ID'], ENV['SMARTY_STREETS_AUTH_TOKEN'] unless
+      %w(ID TOKEN).any? {|k| ENV["SMARTY_STREETS_AUTH_#{k}"].nil? }
+  end
+
   config.to_prepare &method(:activate).to_proc
 end

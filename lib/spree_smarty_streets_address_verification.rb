@@ -22,8 +22,3 @@ module SpreeSmartyStreetsAddressVerification
 end
 
 require 'spree_smarty_streets_address_verification/engine'
-
-# Only authenticate if credentials are provided
-SmartyStreets.set_auth \
-  ENV['SMARTY_STREETS_AUTH_ID'], ENV['SMARTY_STREETS_AUTH_TOKEN'] unless
-  %w(ID TOKEN).any? {|k| ENV["SMARTY_STREETS_AUTH_#{k}"].nil? }

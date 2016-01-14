@@ -1,5 +1,23 @@
 Spree::Address.class_eval do
 
+  # If an address has been verified then the long/lat is captured. This provides
+  # a scope where you can get all addresses near the given lat/lng with a max
+  # distance of the given amount (optional).
+  #
+  # This is postgres specific. Perhaps we should put a check here and only
+  # define if on postgres?
+  #
+  # ** NOTE: postgres earthdistance orders points as (lng,lat) **
+  scope :by_distance_from_latlong, -> (lat, lng, max_distance = nil) {
+    target   = "point(#{lng}, #{lat})"
+    destination  = "point(#{table_name}.longitude, #{table_name}.latitude)"
+    miles_apart = "(#{target} <@> #{destination})"
+
+    query = select("#{miles_apart} as miles").where.not latitude: nil, longitude: nil
+    query = query.where("#{miles_apart} <= ?", max_distance) if max_distance.present?
+    query
+  }
+
   # Indicates if an address is a valid deliverable address. Can only validate
   # addresses in the United States. If the address is outside the United States
   # then an error is thrown.
