@@ -49,7 +49,7 @@ Spree::Address.class_eval do
         ), address
         self.address2 = combine %i(secondary_designator secondary_number), address
         self.city = address.components.city_name
-        self.state = Spree::State.find_by abbr: address.components.state_abbreviation
+        self.state = country.states.find_by abbr: address.components.state_abbreviation
         self.zipcode = combine %i(zipcode plus4_code), address, '-'
 
         # Also store the long/lat. It's useful and SmartyStreets provides it
