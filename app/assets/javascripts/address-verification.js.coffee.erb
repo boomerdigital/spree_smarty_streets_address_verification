@@ -57,3 +57,13 @@ $ ->
     fieldSelector: 'input[type=text], input:not([type]), textarea, select:not([name*="country_id"])'
 
   $(country_selector).trigger 'change'
+
+# Allows 3rd party code to manipulate and examine the address verification.
+# Provide any field that is part of the address and it will return the address
+# object.
+@smarty_address_for = (field) ->
+  for address in service.getMappedAddresses()
+    for key, fld of address.getDomFields()
+      return address if field == fld
+
+@smarty_service = -> service
