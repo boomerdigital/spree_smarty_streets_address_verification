@@ -5,7 +5,7 @@ return if smarty_key == ''
 
 # In theory everything below *should* be replaceable with just:
 #
-#   jQuery.LiveAddress key: smarty_key, enforceVerification: true
+#   jQuery.LiveAddress key: smarty_key, enforceVerification: true, autoVerify: false
 #
 # But because of a bug in the SmartyStreets plugin we have a lot more code.
 # The country field can be a drop-down but the plugin looks at the "id" not
@@ -53,7 +53,7 @@ $(document).on 'change', country_selector, ->
 $ ->
   sreturn unless $.LiveAddress
   service = $.LiveAddress
-    key: smarty_key, debug: false, enforceVerification: true
+    key: smarty_key, debug: false, enforceVerification: true, autoVerify: false,
     fieldSelector: 'input[type=text], input:not([type]), textarea, select:not([name*="country_id"])'
 
   $(country_selector).trigger 'change'
