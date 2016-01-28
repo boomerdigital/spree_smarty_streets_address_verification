@@ -49,7 +49,7 @@ Spree::Address.class_eval do
         ), address
         self.address2 = combine %i(secondary_designator secondary_number), address
         self.city = address.components.city_name
-        self.state = Spree::State.find_by abbr: address.components.state_abbreviation
+        self.state = country.states.find_by abbr: address.components.state_abbreviation
         self.zipcode = combine %i(zipcode plus4_code), address, '-'
 
         # Also store the long/lat. It's useful and SmartyStreets provides it
@@ -83,6 +83,7 @@ Spree::Address.class_eval do
   private
 
   def automatically_validate_address?
+    return false unless migrated_for_validation?
     return false unless in_united_states?
     return false unless SpreeSmartyStreetsAddressVerification.enabled? self
     return true if address_validation_field_changed?
@@ -90,6 +91,7 @@ Spree::Address.class_eval do
   end
 
   def address_validation_field_changed?
+    return false unless migrated_for_validation?
     return false if new_record? && validated?
     return true if new_record?
     (changed & %w(address1 address2 city zipcode company state_name)).any? ||
@@ -98,6 +100,7 @@ Spree::Address.class_eval do
 
   # Adds an error to the address model if the address is not deliverable
   def check_address
+    return unless migrated_for_validation?
     self.validated = deliverable_address?
     errors[:base] << Spree.t(:invalid_address) unless validated?
   end
@@ -107,6 +110,21 @@ Spree::Address.class_eval do
     components.collect do |method|
       address.components.public_send method
     end.reject(&:blank?) * sep
+  end
+
+  # The `validated` field was added later. If the application:
+  #
+  # * Updates to the version of this plugin with the field
+  # * Hasn't yet run the migration
+  # * Is runnign code that saves addresses (for example an earlier migration)
+  #
+  # Then we get an error. This prevents that error by skipping validation until
+  # the data model is ready.
+  #
+  # OK to remove this down the road once we feel there is not reasonble chance
+  # somebody using the plugin has not run the migration.
+  def migrated_for_validation?
+    respond_to? :validated?
   end
 
 end
