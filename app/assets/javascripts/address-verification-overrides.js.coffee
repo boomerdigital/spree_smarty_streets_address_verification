@@ -2,10 +2,10 @@ $ = jQuery
 
 old_update_state = window.update_state
 window.update_state = (region, done)->
-  old_update_state region, done
-  if $.fn.select2?
-    delay = -> $('span#' + region + 'state select.select2').select2 'destroy'
-    setTimeout delay 500
+  decorated_done = ->
+    $('span#' + region + 'state select.select2').select2 'destroy' if $.fn.select2?
+    done() if done
+  old_update_state region, decorated_done
 
 $(document).on 'ready page:load', ->
   return unless $.fn.select2?
