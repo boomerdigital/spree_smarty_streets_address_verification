@@ -52,7 +52,7 @@ $(document).on 'change', country_selector, ->
   else
     service.deactivate validator_id if active
 
-$ ->
+$(document).on 'ready page:load', ->
   return unless $.LiveAddress
   service = $.LiveAddress
     key: smarty_key, debug: false, enforceVerification: true, autoVerify: false,
