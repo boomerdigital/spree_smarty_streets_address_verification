@@ -1,7 +1,7 @@
 $ = jQuery
 
-old_update_state = update_state
-update_state = (region, done)->
+old_update_state = window.update_state
+window.update_state = (region, done)->
   old_update_state region, done
   if $.fn.select2?
     delay = -> $('span#' + region + 'state select.select2').select2 'destroy'
